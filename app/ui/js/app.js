@@ -13,6 +13,7 @@ import * as printer from './views/printer.js';
 import * as history from './views/history.js';
 import * as tasks from './views/tasks.js';
 import * as settings from './views/settings.js';
+import * as i18n from './i18n.js';
 
 const VIEWS = { home, print, scan, tasks, printer, history, settings };
 
@@ -182,7 +183,7 @@ async function renderRoute() {
   const token = ++routeToken;
   currentRoute = route;
   setActiveNav(route);
-  document.title = `${view.title} · HP Offline`;
+  document.title = `${i18n.t(view.title)} · HP Offline`;
   updateViewHead();
   try {
     localStorage.setItem('hp.route', route);
@@ -200,6 +201,7 @@ async function renderRoute() {
     return;
   }
   currentCleanup = typeof cleanup === 'function' ? cleanup : null;
+  i18n.apply(viewRoot);
 }
 
 /* -------------------------------------------------------------------------- */
@@ -515,9 +517,11 @@ async function boot() {
   }
   window.addEventListener('hashchange', () => renderRoute());
 
+  i18n.init();
   await Promise.allSettled([loadHealth(), loadSettings()]);
   await refreshPrinters({ silent: true });
   await renderRoute();
+  i18n.apply(document.body);
   subscribeEvents();
 
   setInterval(loadHealth, 30000);

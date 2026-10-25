@@ -17,6 +17,7 @@ import {
   openDialog,
 } from '../components/ui.js';
 import { banner } from '../components/feedback.js';
+import * as i18n from '../i18n.js';
 
 export const title = '设置';
 export const subtitle = '所有配置都保存在本机';
@@ -82,6 +83,30 @@ export async function mount(root, ctx) {
       'div',
       {},
       h(
+        'div',
+        { class: 'setting-row' },
+        h(
+          'div',
+          { class: 'setting-label' },
+          h('span', { class: 'setting-name', text: '语言' }),
+          h('span', { class: 'setting-desc', text: '默认跟随浏览器语言，也可以手动指定。' })
+        ),
+        h(
+          'div',
+          { class: 'setting-control is-wide' },
+          selectField({
+            label: '界面语言',
+            options: i18n.LANGS.map((item) => ({ value: item.value, label: item.label })),
+            value: i18n.getPref(),
+            onchange: (event) => {
+              const value = event.target.value;
+              i18n.setLang(value);
+              if (state.settings) state.settings.language = value;
+              patch({ language: value }, '语言');
+            },
+          })
+        )
+      ),      h(
         'div',
         { class: 'setting-row' },
         h(
