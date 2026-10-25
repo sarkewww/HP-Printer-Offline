@@ -1,0 +1,3 @@
+# HP Offline — 运行时依赖（仅这两个，其余全部用 Python 标准库）
+PyMuPDF>=1.24
+Pillow>=10.0

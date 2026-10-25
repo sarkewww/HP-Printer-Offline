@@ -1,0 +1,416 @@
+/* ============================================================================
+   HP Offline · Material Design 3 设计令牌
+   种子色 #0096D6（HP 青蓝）。色调梯度按 MD3 tonal palette 手工调校，
+   亮度步进约 10/20/30/40/50/60/70/80/90/95/99，色相保持在 198–200°，
+   饱和度随亮度升高而收敛，避免"荧光蓝"。
+   ========================================================================== */
+
+:root {
+  /* ---------- 字体 ---------- */
+  --font-sans: "Segoe UI Variable Display", "Segoe UI", "Microsoft YaHei UI",
+    "Microsoft YaHei", "PingFang SC", "Hiragino Sans GB", sans-serif;
+  --font-mono: "Cascadia Mono", "Consolas", "SFMono-Regular", "Courier New", monospace;
+
+  /* ---------- MD3 字阶（中文按 500 字重微调，保证小字号清晰） ---------- */
+  --type-display-l: 400 57px/64px var(--font-sans);
+  --type-display-m: 400 45px/52px var(--font-sans);
+  --type-display-s: 400 36px/44px var(--font-sans);
+  --type-headline-l: 500 32px/40px var(--font-sans);
+  --type-headline-m: 500 28px/36px var(--font-sans);
+  --type-headline-s: 600 24px/32px var(--font-sans);
+  --type-title-l: 600 22px/28px var(--font-sans);
+  --type-title-m: 600 16px/24px var(--font-sans);
+  --type-title-s: 600 14px/20px var(--font-sans);
+  --type-body-l: 400 16px/24px var(--font-sans);
+  --type-body-m: 400 14px/20px var(--font-sans);
+  --type-body-s: 400 12px/16px var(--font-sans);
+  --type-label-l: 500 14px/20px var(--font-sans);
+  --type-label-m: 500 12px/16px var(--font-sans);
+  --type-label-s: 500 11px/16px var(--font-sans);
+  --type-mono: 400 12px/18px var(--font-mono);
+
+  /* ---------- 形状 ---------- */
+  --shape-none: 0;
+  --shape-xs: 4px;
+  --shape-sm: 8px;
+  --shape-md: 12px;
+  --shape-lg: 16px;
+  --shape-xl: 28px;
+  --shape-full: 999px;
+
+  /* ---------- 间距（8px 栅格） ---------- */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 40px;
+  --space-8: 48px;
+  --gutter: 24px;
+
+  /* ---------- 动效 ---------- */
+  --ease-emphasized: cubic-bezier(0.2, 0, 0, 1);
+  --ease-standard: cubic-bezier(0.2, 0, 0, 1);
+  --ease-spring: cubic-bezier(0.34, 1.4, 0.64, 1);
+  --dur-short-2: 150ms;
+  --dur-medium-1: 250ms;
+  --dur-medium-2: 300ms;
+  --dur-long-1: 400ms;
+
+  /* ---------- 状态层不透明度 ---------- */
+  --state-hover: 0.08;
+  --state-focus: 0.10;
+  --state-pressed: 0.12;
+
+  /* ---------- 强调色梯度：HP 青蓝（默认种子 #0096D6） ---------- */
+  --p-0: #000000;
+  --p-10: #001e2c;
+  --p-20: #00344a;
+  --p-30: #004c69;
+  --p-40: #00658b;
+  --p-50: #007fae;
+  --p-60: #009ad1;
+  --p-70: #43b5ec;
+  --p-80: #7bd0ff;
+  --p-90: #c2e8ff;
+  --p-95: #e1f3ff;
+  --p-99: #f6fbff;
+
+  /* ---------- 次级色（低饱和蓝灰，hue 205） ---------- */
+  --s-10: #071e28;
+  --s-20: #1b343f;
+  --s-30: #324b56;
+  --s-40: #4a626e;
+  --s-50: #627b87;
+  --s-60: #7b95a1;
+  --s-70: #95afbc;
+  --s-80: #b0cbd8;
+  --s-90: #cce7f5;
+  --s-95: #e4f3fb;
+  --s-99: #f5fafd;
+
+  /* ---------- 三级色（青绿，hue 172） ---------- */
+  --t-10: #00201b;
+  --t-20: #003731;
+  --t-30: #005048;
+  --t-40: #00695f;
+  --t-50: #008478;
+  --t-60: #009f92;
+  --t-70: #2dbbad;
+  --t-80: #55d7c8;
+  --t-90: #77f4e3;
+  --t-95: #b7fff5;
+  --t-99: #f2fffc;
+
+  /* ---------- 中性色（hue 210，低饱和） ---------- */
+  --n-0: #000000;
+  --n-4: #0b0f11;
+  --n-6: #101416;
+  --n-10: #191c1e;
+  --n-12: #1d2022;
+  --n-17: #272a2c;
+  --n-20: #2e3133;
+  --n-22: #333638;
+  --n-24: #373a3c;
+  --n-30: #45484a;
+  --n-40: #5d6062;
+  --n-50: #75787a;
+  --n-60: #8f9193;
+  --n-70: #a9acae;
+  --n-80: #c5c7c9;
+  --n-87: #dde0e2;
+  --n-90: #e1e3e5;
+  --n-92: #e7e9eb;
+  --n-94: #edeff1;
+  --n-95: #eff1f3;
+  --n-96: #f2f4f6;
+  --n-98: #f8fafc;
+  --n-100: #ffffff;
+
+  /* ---------- 中性变体（描边用） ---------- */
+  --nv-10: #191c1e;
+  --nv-20: #2e3133;
+  --nv-30: #44474a;
+  --nv-40: #5c5f62;
+  --nv-50: #75777b;
+  --nv-60: #8f9194;
+  --nv-70: #a9abaf;
+  --nv-80: #c5c7ca;
+  --nv-90: #e1e3e6;
+  --nv-95: #eff1f4;
+  --nv-99: #fbfcfe;
+
+  /* ---------- 错误色 ---------- */
+  --e-10: #410002;
+  --e-20: #690005;
+  --e-30: #93000a;
+  --e-40: #ba1a1a;
+  --e-80: #ffb4ab;
+  --e-90: #ffdad6;
+  --e-95: #ffedea;
+
+  /* ---------- 墨色（耗材可视化，非主题色） ---------- */
+  --ink-black: #1a1a1a;
+  --ink-color: #0096d6;
+
+  /* ---------- 布局 ---------- */
+  --rail-w: 240px;
+  --topbar-h: 64px;
+}
+
+/* ============================================================================
+   强调色变体：只替换 primary 梯度，角色映射保持不变
+   ========================================================================== */
+
+:root[data-accent="teal"] {
+  --p-10: #00201b;
+  --p-20: #003730;
+  --p-30: #004f45;
+  --p-40: #00695c;
+  --p-50: #00847a;
+  --p-60: #009f93;
+  --p-70: #35bbad;
+  --p-80: #57d7c8;
+  --p-90: #7cf4e4;
+  --p-95: #b9fff5;
+  --p-99: #f2fffc;
+}
+
+:root[data-accent="amber"] {
+  --p-10: #2a1700;
+  --p-20: #452b00;
+  --p-30: #633f00;
+  --p-40: #825500;
+  --p-50: #a36b00;
+  --p-60: #c58600;
+  --p-70: #e7a400;
+  --p-80: #ffb95c;
+  --p-90: #ffddba;
+  --p-95: #ffeedd;
+  --p-99: #fffbf5;
+}
+
+:root[data-accent="rose"] {
+  --p-10: #3e001d;
+  --p-20: #5e0030;
+  --p-30: #800044;
+  --p-40: #a30058;
+  --p-50: #c81e6e;
+  --p-60: #e83c88;
+  --p-70: #ff85ac;
+  --p-80: #ffb1c7;
+  --p-90: #ffd9e2;
+  --p-95: #ffecf0;
+  --p-99: #fffbff;
+}
+
+/* ============================================================================
+   浅色角色
+   ========================================================================== */
+
+:root,
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --md-sys-color-primary: var(--p-40);
+  --md-sys-color-on-primary: #ffffff;
+  --md-sys-color-primary-container: var(--p-90);
+  --md-sys-color-on-primary-container: var(--p-10);
+  --md-sys-color-primary-fixed: var(--p-90);
+  --md-sys-color-primary-fixed-dim: var(--p-80);
+  --md-sys-color-on-primary-fixed: var(--p-10);
+  --md-sys-color-on-primary-fixed-variant: var(--p-30);
+  --md-sys-color-inverse-primary: var(--p-80);
+
+  --md-sys-color-secondary: var(--s-40);
+  --md-sys-color-on-secondary: #ffffff;
+  --md-sys-color-secondary-container: var(--s-90);
+  --md-sys-color-on-secondary-container: var(--s-10);
+
+  --md-sys-color-tertiary: var(--t-40);
+  --md-sys-color-on-tertiary: #ffffff;
+  --md-sys-color-tertiary-container: var(--t-90);
+  --md-sys-color-on-tertiary-container: var(--t-10);
+
+  --md-sys-color-error: var(--e-40);
+  --md-sys-color-on-error: #ffffff;
+  --md-sys-color-error-container: var(--e-90);
+  --md-sys-color-on-error-container: var(--e-10);
+
+  --md-sys-color-background: var(--n-98);
+  --md-sys-color-on-background: var(--n-10);
+  --md-sys-color-surface: var(--n-98);
+  --md-sys-color-on-surface: var(--n-10);
+  --md-sys-color-surface-variant: var(--nv-90);
+  --md-sys-color-on-surface-variant: var(--nv-30);
+  --md-sys-color-surface-dim: var(--n-87);
+  --md-sys-color-surface-bright: var(--n-98);
+  --md-sys-color-surface-container-lowest: #ffffff;
+  --md-sys-color-surface-container-low: var(--n-96);
+  --md-sys-color-surface-container: var(--n-94);
+  --md-sys-color-surface-container-high: var(--n-92);
+  --md-sys-color-surface-container-highest: var(--n-90);
+
+  --md-sys-color-outline: var(--nv-50);
+  --md-sys-color-outline-variant: var(--nv-80);
+  --md-sys-color-inverse-surface: var(--n-20);
+  --md-sys-color-inverse-on-surface: var(--n-95);
+  --md-sys-color-scrim: #000000;
+  --md-sys-color-surface-tint: var(--md-sys-color-primary);
+
+  --md-sys-color-success: #1b6b3a;
+  --md-sys-color-success-container: #c8f0d5;
+  --md-sys-color-on-success-container: #05240f;
+  --md-sys-color-warning: #7a5300;
+  --md-sys-color-warning-container: #ffe0a3;
+  --md-sys-color-on-warning-container: #261900;
+
+  --md-sys-elevation-1: 0 1px 2px rgba(16, 20, 22, 0.10), 0 1px 3px 1px rgba(16, 20, 22, 0.06);
+  --md-sys-elevation-2: 0 1px 2px rgba(16, 20, 22, 0.12), 0 2px 6px 2px rgba(16, 20, 22, 0.08);
+  --md-sys-elevation-3: 0 1px 3px rgba(16, 20, 22, 0.14), 0 4px 8px 3px rgba(16, 20, 22, 0.10);
+  --md-sys-elevation-4: 0 2px 3px rgba(16, 20, 22, 0.14), 0 6px 10px 4px rgba(16, 20, 22, 0.10);
+  --md-sys-elevation-5: 0 4px 4px rgba(16, 20, 22, 0.14), 0 8px 12px 6px rgba(16, 20, 22, 0.10);
+
+  --tint-surface-1: color-mix(in srgb, var(--p-40) 5%, var(--md-sys-color-surface-container-low));
+  --tint-surface-2: color-mix(in srgb, var(--p-40) 8%, var(--md-sys-color-surface-container));
+  --hero-wash: radial-gradient(120% 140% at 88% -10%, color-mix(in srgb, var(--p-60) 22%, transparent) 0%, transparent 58%),
+    linear-gradient(180deg, var(--md-sys-color-surface-container-lowest) 0%, var(--md-sys-color-surface-container-low) 100%);
+}
+
+/* ============================================================================
+   深色角色（真实色调反转，非滤镜）
+   ========================================================================== */
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  --md-sys-color-primary: var(--p-80);
+  --md-sys-color-on-primary: var(--p-20);
+  --md-sys-color-primary-container: var(--p-30);
+  --md-sys-color-on-primary-container: var(--p-90);
+  --md-sys-color-primary-fixed: var(--p-90);
+  --md-sys-color-primary-fixed-dim: var(--p-80);
+  --md-sys-color-on-primary-fixed: var(--p-10);
+  --md-sys-color-on-primary-fixed-variant: var(--p-30);
+  --md-sys-color-inverse-primary: var(--p-40);
+
+  --md-sys-color-secondary: var(--s-80);
+  --md-sys-color-on-secondary: var(--s-20);
+  --md-sys-color-secondary-container: var(--s-30);
+  --md-sys-color-on-secondary-container: var(--s-90);
+
+  --md-sys-color-tertiary: var(--t-80);
+  --md-sys-color-on-tertiary: var(--t-20);
+  --md-sys-color-tertiary-container: var(--t-30);
+  --md-sys-color-on-tertiary-container: var(--t-90);
+
+  --md-sys-color-error: var(--e-80);
+  --md-sys-color-on-error: var(--e-20);
+  --md-sys-color-error-container: var(--e-30);
+  --md-sys-color-on-error-container: var(--e-90);
+
+  --md-sys-color-background: var(--n-6);
+  --md-sys-color-on-background: var(--n-90);
+  --md-sys-color-surface: var(--n-6);
+  --md-sys-color-on-surface: var(--n-90);
+  --md-sys-color-surface-variant: var(--nv-30);
+  --md-sys-color-on-surface-variant: var(--nv-80);
+  --md-sys-color-surface-dim: var(--n-6);
+  --md-sys-color-surface-bright: var(--n-24);
+  --md-sys-color-surface-container-lowest: var(--n-4);
+  --md-sys-color-surface-container-low: var(--n-10);
+  --md-sys-color-surface-container: var(--n-12);
+  --md-sys-color-surface-container-high: var(--n-17);
+  --md-sys-color-surface-container-highest: var(--n-22);
+
+  --md-sys-color-outline: var(--nv-60);
+  --md-sys-color-outline-variant: var(--nv-30);
+  --md-sys-color-inverse-surface: var(--n-90);
+  --md-sys-color-inverse-on-surface: var(--n-20);
+  --md-sys-color-scrim: #000000;
+  --md-sys-color-surface-tint: var(--md-sys-color-primary);
+
+  --md-sys-color-success: #8fd6a4;
+  --md-sys-color-success-container: #0f3d20;
+  --md-sys-color-on-success-container: #b9f0c8;
+  --md-sys-color-warning: #f5c05a;
+  --md-sys-color-warning-container: #4a3400;
+  --md-sys-color-on-warning-container: #ffe0a3;
+
+  --md-sys-elevation-1: 0 1px 2px rgba(0, 0, 0, 0.45), 0 1px 3px 1px rgba(0, 0, 0, 0.30);
+  --md-sys-elevation-2: 0 1px 2px rgba(0, 0, 0, 0.50), 0 2px 6px 2px rgba(0, 0, 0, 0.32);
+  --md-sys-elevation-3: 0 1px 3px rgba(0, 0, 0, 0.55), 0 4px 8px 3px rgba(0, 0, 0, 0.34);
+  --md-sys-elevation-4: 0 2px 3px rgba(0, 0, 0, 0.55), 0 6px 10px 4px rgba(0, 0, 0, 0.34);
+  --md-sys-elevation-5: 0 4px 4px rgba(0, 0, 0, 0.55), 0 8px 12px 6px rgba(0, 0, 0, 0.34);
+
+  --tint-surface-1: color-mix(in srgb, var(--p-80) 6%, var(--md-sys-color-surface-container-low));
+  --tint-surface-2: color-mix(in srgb, var(--p-80) 9%, var(--md-sys-color-surface-container));
+  --hero-wash: radial-gradient(120% 140% at 88% -10%, color-mix(in srgb, var(--p-70) 18%, transparent) 0%, transparent 58%),
+    linear-gradient(180deg, var(--md-sys-color-surface-container) 0%, var(--md-sys-color-surface-container-low) 100%);
+}
+
+/* 跟随系统：仅在 data-theme="system" 时启用深色角色 */
+@media (prefers-color-scheme: dark) {
+  :root[data-theme="system"] {
+    color-scheme: dark;
+
+    --md-sys-color-primary: var(--p-80);
+    --md-sys-color-on-primary: var(--p-20);
+    --md-sys-color-primary-container: var(--p-30);
+    --md-sys-color-on-primary-container: var(--p-90);
+    --md-sys-color-inverse-primary: var(--p-40);
+
+    --md-sys-color-secondary: var(--s-80);
+    --md-sys-color-on-secondary: var(--s-20);
+    --md-sys-color-secondary-container: var(--s-30);
+    --md-sys-color-on-secondary-container: var(--s-90);
+
+    --md-sys-color-tertiary: var(--t-80);
+    --md-sys-color-on-tertiary: var(--t-20);
+    --md-sys-color-tertiary-container: var(--t-30);
+    --md-sys-color-on-tertiary-container: var(--t-90);
+
+    --md-sys-color-error: var(--e-80);
+    --md-sys-color-on-error: var(--e-20);
+    --md-sys-color-error-container: var(--e-30);
+    --md-sys-color-on-error-container: var(--e-90);
+
+    --md-sys-color-background: var(--n-6);
+    --md-sys-color-on-background: var(--n-90);
+    --md-sys-color-surface: var(--n-6);
+    --md-sys-color-on-surface: var(--n-90);
+    --md-sys-color-surface-variant: var(--nv-30);
+    --md-sys-color-on-surface-variant: var(--nv-80);
+    --md-sys-color-surface-dim: var(--n-6);
+    --md-sys-color-surface-bright: var(--n-24);
+    --md-sys-color-surface-container-lowest: var(--n-4);
+    --md-sys-color-surface-container-low: var(--n-10);
+    --md-sys-color-surface-container: var(--n-12);
+    --md-sys-color-surface-container-high: var(--n-17);
+    --md-sys-color-surface-container-highest: var(--n-22);
+
+    --md-sys-color-outline: var(--nv-60);
+    --md-sys-color-outline-variant: var(--nv-30);
+    --md-sys-color-inverse-surface: var(--n-90);
+    --md-sys-color-inverse-on-surface: var(--n-20);
+
+    --md-sys-color-success: #8fd6a4;
+    --md-sys-color-success-container: #0f3d20;
+    --md-sys-color-on-success-container: #b9f0c8;
+    --md-sys-color-warning: #f5c05a;
+    --md-sys-color-warning-container: #4a3400;
+    --md-sys-color-on-warning-container: #ffe0a3;
+
+    --md-sys-elevation-1: 0 1px 2px rgba(0, 0, 0, 0.45), 0 1px 3px 1px rgba(0, 0, 0, 0.30);
+    --md-sys-elevation-2: 0 1px 2px rgba(0, 0, 0, 0.50), 0 2px 6px 2px rgba(0, 0, 0, 0.32);
+    --md-sys-elevation-3: 0 1px 3px rgba(0, 0, 0, 0.55), 0 4px 8px 3px rgba(0, 0, 0, 0.34);
+    --md-sys-elevation-4: 0 2px 3px rgba(0, 0, 0, 0.55), 0 6px 10px 4px rgba(0, 0, 0, 0.34);
+    --md-sys-elevation-5: 0 4px 4px rgba(0, 0, 0, 0.55), 0 8px 12px 6px rgba(0, 0, 0, 0.34);
+
+    --tint-surface-1: color-mix(in srgb, var(--p-80) 6%, var(--md-sys-color-surface-container-low));
+    --tint-surface-2: color-mix(in srgb, var(--p-80) 9%, var(--md-sys-color-surface-container));
+    --hero-wash: radial-gradient(120% 140% at 88% -10%, color-mix(in srgb, var(--p-70) 18%, transparent) 0%, transparent 58%),
+      linear-gradient(180deg, var(--md-sys-color-surface-container) 0%, var(--md-sys-color-surface-container-low) 100%);
+  }
+}
