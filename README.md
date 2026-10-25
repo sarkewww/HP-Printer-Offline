@@ -20,7 +20,7 @@ HP Smart（`AD2F1837.HPPrinterControl`）和新版 HP（`AD2F1837.myHP`）都是
 | 维护/校准 | 云端指令中继 | 直接 `PUT/POST` LEDM 资源 |
 | 打开 App | 先连 CDN 拉 UI、拉配置、拉 flag | 静态本地文件，0 请求 |
 
-**关键事实**：这台打印机（Ink Tank Wireless 410 series）本地协议**完全够用**——
+**关键事实**：现代 HP 打印机的本地协议**完全够用**——
 IPP 打印、eSCL 扫描、LEDM 状态/耗材/维护/复印，一个不缺。
 HP 云在这条链路上**没有提供任何打印机做不到的能力**，它只是中间商。
 
@@ -90,16 +90,16 @@ HTTP、IPP、eSCL、LEDM、SSE、SQLite 全部用 Python 标准库手写。
 - **打印走 IPP**：`http://<ip>:631/ipp/print`，`document-format: image/jpeg`
 - **必须 baseline JPEG（SOF0）**：progressive（SOF2）会被打印机直接判
   `document-unprintable-error`。PyMuPDF 默认输出 progressive，必须转一道 Pillow。
-- **PDF 不能直传**：本机 `document-format-supported` 里**没有** `application/pdf`。
+- **PDF 不能直传**：多数 HP 机型的 `document-format-supported` 里**没有** `application/pdf`。
 - **扫描走 eSCL**：`POST /eSCL/ScanJobs` → `Location` → `GET .../NextDocument`，
   未就绪返回 503，需退避重试。
 - **LEDM 在 80 端口**，不是 3911（3911 是 WSD 的 XAddrs，直接请求会 500）。
 - **IPP 编码陷阱**：属性布局是 `tag | name-len | name | value-len | value`，
   值**不再带 tag**；多值属性才在后续每个值前重复 tag。多写一个字节 → 稳定 `0x0400`。
-- **墨量百分比本机不提供**：`marker-levels = -2`、`ConsumablePercentageLevelRemaining = 0`。
+- **部分墨仓式机型不提供墨量百分比**：`marker-levels = -2`、`ConsumablePercentageLevelRemaining = 0`。
   UI 如实显示「墨仓式 · 无电子墨量」，**不编造数字**。
-- **发现优先 WS-Discovery**：本机 mDNS 收不到回应，SNMP community 为空；
-  WS-Discovery 实测 100% 有回应。所有组播必须绑定局域网源地址（本机有 Clash TUN 会劫持组播）。
+- **发现优先 WS-Discovery**：mDNS 常收不到回应、SNMP community 可能为空；
+  WS-Discovery 实测最可靠。所有组播必须绑定局域网源地址（开了 Clash/TUN 之类的透明代理会劫持组播）。
 
 完整记录见 `docs/protocol.md`。
 
@@ -107,16 +107,16 @@ HTTP、IPP、eSCL、LEDM、SSE、SQLite 全部用 Python 标准库手写。
 
 ## 已知限制
 
-- 只做了 **单面**（设备 `sides-supported: one-sided`）
+- 只做 **单面**（按设备 `sides-supported` 能力，家用机通常为 one-sided）
 - 打印是**光栅化**路径：文字边缘有轻微 JPEG 痕迹。后续可接 PWG-Raster / PCLm 提升到矢量级
-- 只支持**平台式扫描**（本机无 ADF）
+- 仅支持**平台式扫描**；带 ADF 的机型暂未适配
 - 墨量百分比不可用（设备不上报，`marker-levels = -2`）
-- **打印较慢**：整页 300dpi 光栅在这台墨仓机上约 60–90 秒，是真实出纸时间，不是软件卡顿
-- **复印**不是设备原生：`POST /Copy/Jobs` 在本机固件上挂死无响应（见 `docs/protocol.md` §6），
+- **打印较慢**：整页 300dpi 光栅在墨仓式机型上约 60–90 秒，是真实出纸时间，不是软件卡顿
+- **复印**不是设备原生：`POST /Copy/Jobs` 在部分机型固件上挂死无响应（见 `docs/protocol.md` §6），
   因此复印 = 「扫描 → 打印」本地流水线，多花几秒
 - 打印时打印机的 Web 服务会短暂无响应，状态轮询偶发超时（已容忍，不影响出纸）
-- 仅测试过 HP Ink Tank Wireless 410 series；其它 HP 机型应可用（协议是通用的），
-  但维护动作的可用性取决于机型暴露了哪些 LEDM 资源
+- 已在 HP 墨仓式机型上完成真机验证；其它 HP 机型理论上可用（协议通用），
+  建议先用「打印测试页」确认；维护动作的可用性取决于机型暴露了哪些 LEDM 资源
 
 真机验收记录见 `docs/acceptance.md`。
 
@@ -126,5 +126,5 @@ HTTP、IPP、eSCL、LEDM、SSE、SQLite 全部用 Python 标准库手写。
 
 本项目仅用于**控制你自己拥有的打印机**。所有协议都是打印机对外公开的标准
 （IPP / eSCL / LEDM / WS-Discovery），不包含任何破解、绕过计费或规避耗材认证的行为。
-逆向分析仅针对本机已安装的软件，目的是确认「哪些功能其实不需要云」。
+逆向分析仅针对本地已安装的软件，目的是确认「哪些功能其实不需要云」。
 请勿用于侵犯他人设备或违反当地法律。
