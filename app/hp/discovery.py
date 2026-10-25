@@ -6,7 +6,7 @@
     3. SNMP v1 GET sysDescr（161，广播）—— 实测无响应，仅作兜底
     4. 子网 TCP 扫描（并发，200ms 连接超时）—— 最后兜底，实测有效
 
-⚠️ 本机装有 Clash / Meta TUN：默认路由会把 192.168.10.x 也指向 198.18.0.1，
+⚠️ 本机装有 Clash / Meta TUN：默认路由会把 192.168.1.x 也指向 198.18.0.1，
 组播报文会被 TUN 适配器吞掉。因此**每一个组播 socket 都必须**：
     setsockopt(IPPROTO_IP, IP_MULTICAST_IF, inet_aton(源地址))
     bind((源地址, 0))
