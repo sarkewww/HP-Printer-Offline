@@ -412,6 +412,7 @@ export function createSingleMode({ ctx, onChange }) {
         quality: state.options.quality,
         dpi: state.options.dpi,
         media: state.options.media,
+        canvas_media: state.options.canvas_media || null,
         scale: state.options.scale,
         pages: state.options.pages || 'all',
         orientation: state.options.orientation,

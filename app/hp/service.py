@@ -882,6 +882,11 @@ class PrinterService:
         options.setdefault("media", None)
         options.setdefault("scale", "fit")
         options.setdefault("pages", "all")
+        # 图片默认按「照片」优化，避免打印机用文本/图形模式把照片压暗
+        options.setdefault(
+            "content_optimize",
+            "photo" if uploads and all(u.get("kind") == "image" for u in uploads) else "auto",
+        )
 
         title = uploads[0]["name"] if len(uploads) == 1 else "%s 等 %d 个文件" % (
             uploads[0]["name"],
@@ -997,6 +1002,7 @@ class PrinterService:
                         media=media,
                         page_spec=page_spec,
                         orientation=(options.get("orientation") or "auto"),
+                        canvas_media=options.get("canvas_media"),
                     )
                 except ValueError as exc:
                     raise HpError(
@@ -1083,9 +1089,10 @@ class PrinterService:
         cancel: threading.Event,
     ) -> None:
         """用 Create-Job + Send-Document 发送；失败则回退为逐页 Print-Job。"""
-        media = options.get("media")
+        media = options.get("canvas_media") or options.get("media")
         color = options.get("color") or "auto"
         quality = options.get("quality") or "normal"
+        content_optimize = options.get("content_optimize") or "auto"
         job_name = "%s" % (self.store.get_job(job_id) or {}).get("title", "HP Offline 文档")
 
         client = IppPrinter(printer["host"], timeout=60.0)
@@ -1146,6 +1153,7 @@ class PrinterService:
                     color=color,
                     quality=quality,
                     media=media,
+                    content_optimize=content_optimize,
                 )
                 ipp_job_id = last_job
                 sent += copies

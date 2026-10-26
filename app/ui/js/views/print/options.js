@@ -81,6 +81,8 @@ export function createOptionsPanel({
       return;
     }
     const mismatch = String(options.media || '') !== String(readyMedia);
+    // 让后端按「实际装纸」出画布，但按选中尺寸的真实物理大小排版
+    options.canvas_media = mismatch ? readyMedia : null;
     mediaHint.hidden = !mismatch;
     if (mismatch) {
       mediaHint.replaceChildren(
@@ -200,6 +202,7 @@ export function createOptionsPanel({
     Object.assign(options, {
       ...defaults,
       media: defaults.media,
+      canvas_media: null,
       pages: 'all',
     });
     orientation.setValue(options.orientation);

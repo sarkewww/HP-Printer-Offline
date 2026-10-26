@@ -166,6 +166,39 @@ def parse_page_spec(spec: Optional[str], total: int) -> List[int]:
 # ---------------------------------------------------------------------------
 
 
+def _to_srgb(image):
+    """把带 ICC 配置的图片转换到 sRGB。
+
+    不做这一步时，手机拍的 Display P3 / Adobe RGB 图片会被当作 sRGB 直接打，
+    颜色会明显偏暗偏灰 —— 这是「打印出来比原图暗」的常见根因。
+    """
+    icc = None
+    try:
+        icc = (image.info or {}).get("icc_profile")
+    except Exception:  # noqa: BLE001
+        icc = None
+    if not icc:
+        return image
+    try:
+        from PIL import ImageCms
+
+        src = ImageCms.ImageCmsProfile(io.BytesIO(icc))
+        dst = ImageCms.createProfile("sRGB")
+        return ImageCms.profileToProfile(image.convert("RGB"), src, dst, outputMode="RGB")
+    except Exception as exc:  # noqa: BLE001
+        log.warning("ICC 转换失败，按原色域输出：%s", exc)
+        return image
+
+
+def _srgb_profile_bytes():
+    try:
+        from PIL import ImageCms
+
+        return ImageCms.ImageCmsProfile(ImageCms.createProfile("sRGB")).tobytes()
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def _flatten(image, monochrome: bool):
     """把任意模式安全地压成 RGB/L。
 
@@ -174,6 +207,7 @@ def _flatten(image, monochrome: bool):
     原样打出来 —— 既难看又白白烧墨水。
     """
     Image, _ = _load_pil()
+    image = _to_srgb(image)
     has_alpha = image.mode in ("RGBA", "LA", "PA") or (
         image.mode == "P" and "transparency" in (image.info or {})
     )
@@ -196,6 +230,7 @@ def _compose(
     scale: str,
     monochrome: bool,
     orientation: str = "auto",
+    target_media: Optional[str] = None,
 ):
     """把一页图像按 ``scale`` 合成到目标媒体画布上。"""
     Image, _ = _load_pil()
@@ -234,6 +269,17 @@ def _compose(
         canvas.paste(image.crop((0, 0, min(src_w, target_w), min(src_h, target_h))), (0, 0))
         return canvas
 
+    # 真实物理尺寸：选中 4x6 但纸盒是 A4 时，把图片放进「4x6 英寸」的框里再居中贴到 A4 画布
+    if target_media and target_media != media:
+        box_w, box_h = canvas_size(dpi, target_media)
+        factor = min(box_w / src_w, box_h / src_h)
+        new_size = (max(1, int(round(src_w * factor))), max(1, int(round(src_h * factor))))
+        resized = image.resize(new_size, Image.LANCZOS)
+        canvas = Image.new("L" if monochrome else "RGB", (target_w, target_h),
+                           (255,) if monochrome else (255, 255, 255))
+        canvas.paste(resized, ((target_w - new_size[0]) // 2, (target_h - new_size[1]) // 2))
+        return canvas
+
     # fit（默认）：等比缩放到画布内并居中
     factor = min(target_w / src_w, target_h / src_h)
     new_size = (max(1, int(round(src_w * factor))), max(1, int(round(src_h * factor))))
@@ -246,6 +292,12 @@ def _compose(
 
 def _to_jpeg(image, dpi: int, quality: int) -> bytes:
     buffer = io.BytesIO()
+    extra = {}
+    if image.mode != "L":
+        profile = _srgb_profile_bytes()
+        if profile:
+            # 带上 sRGB 配置，避免打印机按自己的默认色域解释导致偏暗
+            extra["icc_profile"] = profile
     image.save(
         buffer,
         "JPEG",
@@ -254,6 +306,7 @@ def _to_jpeg(image, dpi: int, quality: int) -> bytes:
         optimize=False,
         dpi=(dpi, dpi),
         subsampling=0 if image.mode == "L" else 2,
+        **extra,
     )
     data = buffer.getvalue()
     if not is_baseline_jpeg(data):  # pragma: no cover - 理论上不会触发
@@ -275,6 +328,7 @@ def render_pages(
     media: Optional[str] = None,
     page_spec: Optional[str] = "all",
     orientation: str = "auto",
+    canvas_media: Optional[str] = None,
 ) -> List[bytes]:
     """把文档渲染为 baseline JPEG 列表（每页一个）。
 
@@ -295,6 +349,11 @@ def render_pages(
     jpeg_quality = JPEG_QUALITY.get((quality or "normal").lower(), 88)
     monochrome = (color or "auto").lower() == "monochrome"
 
+    # 选中尺寸与纸盒实际装纸不同时：按 canvas_media 出画布，按 media 的真实尺寸排版
+    target_media = media if (canvas_media and canvas_media != media) else None
+    if canvas_media:
+        media = canvas_media
+
     kind = file_kind(path)
     if kind == "unknown":
         raise ValueError("不支持的文件类型：%s" % os.path.basename(path))
@@ -312,7 +371,7 @@ def render_pages(
                 pix = page.get_pixmap(dpi=dpi, colorspace=colorspace, alpha=False)
                 mode = "L" if monochrome else "RGB"
                 image = Image.frombytes(mode, (pix.width, pix.height), pix.samples)
-                composed = _compose(image, dpi, media, scale, monochrome, orientation)
+                composed = _compose(image, dpi, media, scale, monochrome, orientation, target_media)
                 pages.append(_to_jpeg(composed, dpi, jpeg_quality))
                 image.close()
                 composed.close()
@@ -333,7 +392,7 @@ def render_pages(
                             (max(1, int(width_in * dpi)), max(1, int(height_in * dpi))),
                             Image.LANCZOS,
                         )
-                    composed = _compose(frame, dpi, media, scale, monochrome, orientation)
+                    composed = _compose(frame, dpi, media, scale, monochrome, orientation, target_media)
                     pages.append(_to_jpeg(composed, dpi, jpeg_quality))
                     composed.close()
                 finally:

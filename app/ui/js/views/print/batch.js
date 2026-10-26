@@ -484,6 +484,7 @@ export function createBatchMode({ ctx, onChange }) {
             quality: state.options.quality,
             dpi: state.options.dpi,
             media: state.options.media,
+        canvas_media: state.options.canvas_media || null,
             scale: state.options.scale,
             pages: compressPages(pages),
             orientation: state.options.orientation,
