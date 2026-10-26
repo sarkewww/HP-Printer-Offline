@@ -36,6 +36,7 @@ export function createSingleMode({ ctx, onChange }) {
     options: state.options,
     defaults,
     mediaValues: MEDIA_VALUES,
+    readyMedia: (ctx.state.status && ctx.state.status.media && ctx.state.status.media.ready) || null,
     onChange: () => {
       syncPageFromOptions();
       paint();

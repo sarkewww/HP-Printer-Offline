@@ -4624,3 +4624,22 @@ img {
   flex: 1 1 0;
   min-width: 0;
 }
+
+/* ===== 纸张不匹配提示 ===== */
+.media-hint {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  margin-top: calc(var(--space-2) * -1);
+  padding: var(--space-3);
+  border-radius: var(--shape-sm);
+  background: color-mix(in srgb, var(--md-sys-color-warning, #f5a623) 14%, transparent);
+  border: 1px solid color-mix(in srgb, var(--md-sys-color-warning, #f5a623) 40%, transparent);
+}
+.media-hint-text {
+  font: var(--type-body-s);
+  color: var(--md-sys-color-on-surface-variant);
+}
+.media-hint .btn {
+  align-self: flex-start;
+}

@@ -100,7 +100,7 @@ const EN = {
   正在接收扫描数据: 'Receiving scan data', 正在生成扫描文件: 'Building scan file',
   打印机正在输出: 'Printer is printing', 该打印机已注册: 'This printer is already registered',
   指令已发送: 'Command sent',
-  语言: 'Language', 界面语言: 'Interface language',
+  语言: 'Language', 界面语言: 'Interface language', 改用当前装纸: 'Use loaded paper',
   默认跟随浏览器语言也可以手动指定: 'Follows the browser language by default; you can override it.',
   外观: 'Appearance', 主题与强调色立即生效: 'Theme and accent apply immediately',
   深色模式使用独立的色调梯度而不是简单反色: 'Dark mode uses its own tonal palette, not a simple inversion.',

@@ -32,6 +32,7 @@ export function createBatchMode({ ctx, onChange }) {
     options: state.options,
     defaults,
     mediaValues: MEDIA_VALUES,
+    readyMedia: (ctx.state.status && ctx.state.status.media && ctx.state.status.media.ready) || null,
     showPages: false,
     subtitle: '全局选项会应用到所有勾选的页面',
     onChange: () => {

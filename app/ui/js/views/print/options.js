@@ -5,7 +5,7 @@
  * 由调用方负责刷新预览或摘要。
  */
 
-import { h, button, segmented, selectField, stepper } from '../../components/ui.js';
+import { h, button, segmented, selectField, stepper, mediaLabel } from '../../components/ui.js';
 import {
   COLOR_OPTIONS,
   ORIENTATION_OPTIONS,
@@ -20,6 +20,7 @@ export function createOptionsPanel({
   mediaValues,
   onChange,
   showPages = true,
+  readyMedia = null,
   subtitle = '这些设置会同时应用到预览与打印结果',
 }) {
   let pagesField = null;
@@ -55,9 +56,46 @@ export function createOptionsPanel({
     value: options.media,
     onchange: (event) => {
       options.media = event.target.value;
+      syncMediaHint();
       changed();
     },
   });
+
+  const mediaHint = h('div', { class: 'media-hint', hidden: true });
+  const mediaUseReady = button({
+    label: '改用当前装纸',
+    variant: 'text',
+    size: 'sm',
+    onclick: () => {
+      if (!readyMedia) return;
+      options.media = readyMedia;
+      media.select.setValue(readyMedia);
+      syncMediaHint();
+      changed();
+    },
+  });
+
+  function syncMediaHint() {
+    if (!readyMedia) {
+      mediaHint.hidden = true;
+      return;
+    }
+    const mismatch = String(options.media || '') !== String(readyMedia);
+    mediaHint.hidden = !mismatch;
+    if (mismatch) {
+      mediaHint.replaceChildren(
+        h('span', {
+          class: 'media-hint-text',
+          text:
+            '打印机当前装纸是 ' + mediaLabel(readyMedia) +
+            '，与你选择的 ' + mediaLabel(options.media) +
+            ' 不一致；打印机会按实际装纸输出。',
+        }),
+        mediaUseReady
+      );
+    }
+  }
+  syncMediaHint();
 
   const color = segmented({
     options: COLOR_OPTIONS,
@@ -117,6 +155,7 @@ export function createOptionsPanel({
     group('方向', orientation),
     group('缩放', scale),
     media,
+    mediaHint,
     group('彩色', color),
     group('质量', quality),
     h('div', { class: 'option-group' }, copies),
@@ -166,6 +205,7 @@ export function createOptionsPanel({
     orientation.setValue(options.orientation);
     scale.setValue(options.scale);
     media.select.setValue(options.media);
+    syncMediaHint();
     color.setValue(options.color);
     quality.setValue(options.quality);
     copies.setValue(options.copies);
