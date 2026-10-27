@@ -1003,6 +1003,7 @@ class PrinterService:
                         page_spec=page_spec,
                         orientation=(options.get("orientation") or "auto"),
                         canvas_media=options.get("canvas_media"),
+                        enhance=bool(options.get("auto_enhance", True)),
                     )
                 except ValueError as exc:
                     raise HpError(

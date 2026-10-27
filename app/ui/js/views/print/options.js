@@ -5,7 +5,7 @@
  * 由调用方负责刷新预览或摘要。
  */
 
-import { h, button, segmented, selectField, stepper, mediaLabel } from '../../components/ui.js';
+import { h, button, segmented, selectField, stepper, switchControl, mediaLabel } from '../../components/ui.js';
 import {
   COLOR_OPTIONS,
   ORIENTATION_OPTIONS,
@@ -161,6 +161,19 @@ export function createOptionsPanel({
     group('彩色', color),
     group('质量', quality),
     h('div', { class: 'option-group' }, copies),
+    h(
+      'div',
+      { class: 'option-group' },
+      switchControl({
+        label: '自动优化图片',
+        description: '打印前提亮阴影、自动色阶、轻微锐化；关闭则按原图输出。',
+        checked: options.auto_enhance !== false,
+        onchange: (value) => {
+          options.auto_enhance = value;
+          changed();
+        },
+      })
+    ),
     pagesSlot,
     h('div', { class: 'option-group option-group-reset' }, resetBtn)
   );

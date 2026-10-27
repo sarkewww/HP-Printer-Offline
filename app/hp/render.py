@@ -166,6 +166,29 @@ def parse_page_spec(spec: Optional[str], total: int) -> List[int]:
 # ---------------------------------------------------------------------------
 
 
+def _enhance_photo(image):
+    """照片打印前的轻量增强（近似 HP PageLift 的 DocEnhance 效果）。
+
+    HP 原实现是 TensorFlow Lite 模型（HPPageLift.UWP.dll 里的 DocEnhance），
+    这里用经典图像处理做等效近似：自动色阶 + 提亮阴影 + 轻微饱和 + 轻度锐化。
+    只在「自动优化图片」开启时调用；关闭时输出原图。
+    """
+    Image, ImageOps = _load_pil()
+    from PIL import ImageEnhance, ImageFilter
+
+    out = image.convert("RGB")
+    # 1) 自动色阶：裁掉 0.3% 极值，拉开对比
+    out = ImageOps.autocontrast(out, cutoff=0.3)
+    # 2) 提亮阴影：gamma 0.92（>1 会压暗，<1 会提亮）
+    lut = [min(255, int(round(255.0 * ((i / 255.0) ** 0.92)))) for i in range(256)]
+    out = out.point(lut * 3)
+    # 3) 轻微饱和度
+    out = ImageEnhance.Color(out).enhance(1.05)
+    # 4) 轻度锐化（打印会轻微糊，补一点）
+    out = out.filter(ImageFilter.UnsharpMask(radius=1.0, percent=45, threshold=3))
+    return out
+
+
 def _to_srgb(image):
     """把带 ICC 配置的图片转换到 sRGB。
 
@@ -329,6 +352,7 @@ def render_pages(
     page_spec: Optional[str] = "all",
     orientation: str = "auto",
     canvas_media: Optional[str] = None,
+    enhance: bool = False,
 ) -> List[bytes]:
     """把文档渲染为 baseline JPEG 列表（每页一个）。
 
@@ -383,6 +407,8 @@ def render_pages(
                 if total > 1:
                     img.seek(index)
                 frame = ImageOps.exif_transpose(img.copy())
+                if enhance:
+                    frame = _enhance_photo(frame)
                 try:
                     # 小图放大到目标 dpi 的等效尺寸，避免打印出邮票大小
                     width_in = frame.width / 96.0

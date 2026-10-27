@@ -27,6 +27,7 @@ export const DEFAULT_OPTIONS = {
   scale: 'fit',
   orientation: 'auto',
   pages: 'all',
+  auto_enhance: true,
 };
 
 export const ORIENTATION_OPTIONS = [
