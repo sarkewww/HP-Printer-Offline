@@ -5,7 +5,7 @@
  * 由调用方负责刷新预览或摘要。
  */
 
-import { h, button, segmented, selectField, stepper, switchControl, mediaLabel } from '../../components/ui.js';
+import { h, button, segmented, selectField, stepper, switchControl, slider, mediaLabel } from '../../components/ui.js';
 import {
   COLOR_OPTIONS,
   ORIENTATION_OPTIONS,
@@ -164,6 +164,19 @@ export function createOptionsPanel({
     h(
       'div',
       { class: 'option-group' },
+      slider({
+        label: '亮度',
+        ariaLabel: '打印亮度',
+        min: -30,
+        max: 30,
+        step: 5,
+        value: Number(options.brightness || 0),
+        format: (value) => (value > 0 ? '+' + value : String(value)) + '%',
+        oninput: (value) => {
+          options.brightness = value;
+          changed();
+        },
+      }),
       switchControl({
         label: '自动优化图片',
         description: '打印前提亮阴影、自动色阶、轻微锐化；关闭则按原图输出。',

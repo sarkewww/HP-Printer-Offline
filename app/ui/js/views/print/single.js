@@ -440,6 +440,7 @@ export function createSingleMode({ ctx, onChange }) {
         media: state.options.media,
         canvas_media: state.options.canvas_media || null,
         auto_enhance: state.options.auto_enhance !== false,
+        brightness: Number(state.options.brightness || 0),
         scale: state.options.scale,
         pages: state.options.pages || 'all',
         orientation: state.options.orientation,

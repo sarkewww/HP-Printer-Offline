@@ -63,6 +63,8 @@ export async function mount(root, ctx) {
   let scans = [];
   let currentScan = null;
   let scanJob = null;
+  let pollTimer = null;
+  let disposed = false;
   let scansError = '';
 
   /* ------------------------------------------------------------------ 结构 */
@@ -72,7 +74,7 @@ export async function mount(root, ctx) {
   const toolbarMeta = h('span', { class: 'preview-toolbar-meta', text: '—' });
   const fileMeta = h('span', { class: 'preview-filemeta', text: '尚无扫描件' });
   const scanBtn = button({
-    label: '开始扫描',
+    label: '新建扫描',
     icon: 'scan',
     variant: 'filled',
     class: 'btn-block',
@@ -408,7 +410,7 @@ export async function mount(root, ctx) {
     scanBtn.disabled = !enabled;
     scanBtn.replaceChildren(
       icon('scan', 19),
-      h('span', { class: 'btn-label', text: busy ? '正在扫描…' : '开始扫描' })
+      h('span', { class: 'btn-label', text: busy ? '正在扫描…' : '新建扫描' })
     );
   }
 
@@ -471,6 +473,8 @@ export async function mount(root, ctx) {
       toast('扫描任务已开始', { tone: 'success' });
       // 防止作业在响应返回前就已结束而错过 SSE 事件
       checkJobOnce(result.job_id);
+      // SSE 不可靠时也要能收尾：轮询兜底，直到进入终态或视图卸载
+      watchJob(result.job_id);
     } catch (err) {
       scanJob = null;
       paintStage();
@@ -480,6 +484,32 @@ export async function mount(root, ctx) {
     }
   }
 
+  function watchJob(jobId) {
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(async () => {
+      if (disposed) {
+        clearInterval(pollTimer);
+        pollTimer = null;
+        return;
+      }
+      try {
+        const job = await api.job(jobId);
+        if (!scanJob || scanJob.id !== jobId) {
+          clearInterval(pollTimer);
+          pollTimer = null;
+          return;
+        }
+        scanJob = { ...scanJob, ...job };
+        handleJobState(job);
+        if (!ACTIVE_STATES.has(job.state)) {
+          clearInterval(pollTimer);
+          pollTimer = null;
+        }
+      } catch {
+        /* 忽略，下一次继续 */
+      }
+    }, 2000);
+  }
   async function checkJobOnce(jobId) {
     try {
       const job = await api.job(jobId);
@@ -597,6 +627,8 @@ export async function mount(root, ctx) {
   loadScans({ silent: true });
 
   return () => {
+    disposed = true;
+    if (pollTimer) clearInterval(pollTimer);
     offJob();
     offPrinters();
     offStatus();

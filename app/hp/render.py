@@ -189,6 +189,19 @@ def _enhance_photo(image):
     return out
 
 
+def _apply_brightness(image, percent: int):
+    """按百分比整体提亮/压暗（-100..100）。"""
+    try:
+        value = int(percent or 0)
+    except (TypeError, ValueError):
+        value = 0
+    if value == 0:
+        return image
+    gain = 1.0 + value / 100.0
+    lut = [max(0, min(255, int(round(i * gain)))) for i in range(256)]
+    return image.convert("RGB").point(lut * 3)
+
+
 def _to_srgb(image):
     """把带 ICC 配置的图片转换到 sRGB。
 
@@ -300,7 +313,8 @@ def _compose(
         resized = image.resize(new_size, Image.LANCZOS)
         canvas = Image.new("L" if monochrome else "RGB", (target_w, target_h),
                            (255,) if monochrome else (255, 255, 255))
-        canvas.paste(resized, ((target_w - new_size[0]) // 2, (target_h - new_size[1]) // 2))
+        # 与 HP 一致：小尺寸放在纸张左上角，方便裁切
+        canvas.paste(resized, (0, 0))
         return canvas
 
     # fit（默认）：等比缩放到画布内并居中
@@ -353,6 +367,7 @@ def render_pages(
     orientation: str = "auto",
     canvas_media: Optional[str] = None,
     enhance: bool = False,
+    brightness: int = 0,
 ) -> List[bytes]:
     """把文档渲染为 baseline JPEG 列表（每页一个）。
 
@@ -409,6 +424,8 @@ def render_pages(
                 frame = ImageOps.exif_transpose(img.copy())
                 if enhance:
                     frame = _enhance_photo(frame)
+                if brightness:
+                    frame = _apply_brightness(frame, brightness)
                 try:
                     # 小图放大到目标 dpi 的等效尺寸，避免打印出邮票大小
                     width_in = frame.width / 96.0

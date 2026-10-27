@@ -28,6 +28,7 @@ export const DEFAULT_OPTIONS = {
   orientation: 'auto',
   pages: 'all',
   auto_enhance: true,
+  brightness: 0,
 };
 
 export const ORIENTATION_OPTIONS = [

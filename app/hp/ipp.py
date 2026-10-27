@@ -923,6 +923,9 @@ class IppPrinter:
             color_mode = "monochrome"
         elif mode == "color":
             color_mode = "color"
+        elif (content_optimize or "").lower() == "photo":
+            # 照片打印时 auto 会被打印机按通用模式处理，容易压暗；照片直接用 color
+            color_mode = "color"
         else:
             color_mode = "auto"
         attrs: List[Tuple[int, str, Sequence[Any]]] = [
