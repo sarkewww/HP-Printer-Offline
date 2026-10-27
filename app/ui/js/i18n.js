@@ -33,6 +33,7 @@ const EN = {
   开关: 'Switch', 滑块: 'Slider', 刚刚: 'just now', 加载中: 'Loading', 加载失败: 'Load failed',
   读取失败: 'Failed to load', 上传失败: 'Upload failed', 作业失败: 'Job failed', 作业进度: 'Job progress',
   // 打印
+  编辑图片: 'Edit image',
   自动优化图片: 'Auto-enhance photos',
   打印前提亮阴影自动色阶轻微锐化关闭则按原图输出: 'Brighten shadows, auto levels and mild sharpening before printing; turn off to print the original.',
   打印文档: 'Print documents', 打印照片: 'Print photos', 打印预览: 'Print preview', 打印选项: 'Print options',

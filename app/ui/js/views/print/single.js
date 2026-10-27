@@ -141,6 +141,25 @@ export function createSingleMode({ ctx, onChange }) {
     text: '',
   });
 
+  // 图片编辑并入预览卡：默认折叠，点工具栏「编辑图片」展开，避免右侧栏被撑到 1300px+
+  const editorToggle = button({
+    label: '编辑图片',
+    icon: 'crop',
+    variant: 'text',
+    size: 'sm',
+    onclick: () => toggleEditor(),
+  });
+  editorToggle.hidden = true;
+  editorToggle.setAttribute('aria-expanded', 'false');
+
+  const editorSlot = h('div', { class: 'preview-editor', hidden: true }, editor.el);
+
+  function toggleEditor() {
+    const next = editorSlot.hidden;
+    editorSlot.hidden = !next;
+    editorToggle.setAttribute('aria-expanded', String(next));
+  }
+
   const card = h(
     'section',
     { class: 'card preview-card', 'aria-label': '打印预览' },
@@ -148,9 +167,10 @@ export function createSingleMode({ ctx, onChange }) {
       'div',
       { class: 'preview-toolbar' },
       h('div', { class: 'preview-heading' }, fileTitle, fileMeta),
-      h('div', { class: 'preview-tools' }, prevBtn, pageLabel, nextBtn, refreshBtn, replaceBtn)
+      h('div', { class: 'preview-tools' }, prevBtn, pageLabel, nextBtn, refreshBtn, replaceBtn, editorToggle)
     ),
     stage,
+    editorSlot,
     h('div', { class: 'preview-foot' }, footChips, statusText)
   );
 
@@ -158,7 +178,7 @@ export function createSingleMode({ ctx, onChange }) {
     'div',
     { class: 'print-workspace print-single' },
     card,
-    h('div', { class: 'print-side' }, optionsPanel.el, editor.el)
+    h('div', { class: 'print-side' }, optionsPanel.el)
   );
 
   /* ---------------------------------------------------------------- 拖放 */
@@ -226,6 +246,12 @@ export function createSingleMode({ ctx, onChange }) {
     pageLabel.hidden = !showNav;
     refreshBtn.hidden = !hasFile;
     replaceBtn.hidden = !hasFile;
+    const canEdit = hasFile && state.file.kind === 'image';
+    editorToggle.hidden = !canEdit;
+    if (!canEdit) {
+      editorSlot.hidden = true;
+      editorToggle.setAttribute('aria-expanded', 'false');
+    }
     pageLabel.textContent = showNav ? `${state.page + 1} / ${pages}` : '';
 
     fileTitle.textContent = hasFile ? state.file.name : '打印预览';

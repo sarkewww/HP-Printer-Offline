@@ -4643,3 +4643,32 @@ img {
 .media-hint .btn {
   align-self: flex-start;
 }
+
+/* ===== 图片编辑并入预览卡（折叠） ===== */
+.preview-editor {
+  border-top: 1px solid var(--md-sys-color-outline-variant);
+  padding: var(--space-4) var(--space-5) var(--space-5);
+  background: var(--md-sys-color-surface-container-low);
+}
+.preview-editor .edit-panel {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  gap: var(--space-3);
+}
+.preview-editor .edit-canvas-wrap {
+  max-height: 320px;
+}
+.preview-editor .edit-canvas {
+  max-height: 300px;
+  width: auto;
+  max-width: 100%;
+}
+/* 折叠时不留白 */
+.preview-editor[hidden] {
+  display: none !important;
+}
+/* 展开编辑时给固定底栏留出空间，避免按钮被遮住 */
+.preview-editor {
+  padding-bottom: calc(var(--space-5) + 8px);
+}
