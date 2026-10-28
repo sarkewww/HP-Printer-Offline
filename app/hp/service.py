@@ -1156,6 +1156,7 @@ class PrinterService:
                     quality=quality,
                     media=media,
                     content_optimize=content_optimize,
+                    scale=scale,
                 )
                 ipp_job_id = last_job
                 sent += copies

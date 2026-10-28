@@ -916,6 +916,8 @@ class IppPrinter:
         quality: str = "normal",
         media: Optional[str] = None,
         content_optimize: str = "auto",
+        scale: str = "fit",
+        sides: str = "one-sided",
     ) -> List[Tuple[int, str, Sequence[Any]]]:
         """构造 job 属性组。"""
         mode = (color or "auto").lower()
@@ -937,6 +939,10 @@ class IppPrinter:
             attrs.append((T_KEYWORD, "media", [media]))
         if content_optimize:
             attrs.append((T_KEYWORD, "print-content-optimize", [content_optimize]))
+        scaling_map = {"fit": "fit", "fill": "fill", "actual": "none"}
+        attrs.append((T_KEYWORD, "print-scaling", [scaling_map.get((scale or "fit").lower(), "fit")]))
+        if sides:
+            attrs.append((T_KEYWORD, "sides", [sides]))
         return attrs
 
     def print_document(
@@ -948,11 +954,13 @@ class IppPrinter:
         quality: str = "normal",
         media: Optional[str] = None,
         content_optimize: str = "auto",
+        scale: str = "fit",
+        sides: str = "one-sided",
         document_format: str = "image/jpeg",
         timeout: float = 120.0,
     ) -> int:
         """Print-Job，返回 job-id。"""
-        job_attrs = self.build_job_attributes(copies, color, quality, media, content_optimize)
+        job_attrs = self.build_job_attributes(copies, color, quality, media, content_optimize, scale, sides)
         response = self.client.print_job(
             data,
             job_name=job_name,
@@ -979,7 +987,7 @@ class IppPrinter:
         quality: str = "normal",
         media: Optional[str] = None,
     ) -> int:
-        job_attrs = self.build_job_attributes(copies, color, quality, media, content_optimize)
+        job_attrs = self.build_job_attributes(copies, color, quality, media, content_optimize, scale, sides)
         response = self.client.create_job(job_name=job_name, job_attrs=job_attrs)
         if not response.ok:
             raise HpError(
