@@ -403,3 +403,30 @@ normal                  draft
 | U-5 | `BorderlessOptionAvailable` 的判定来源（`inputbins` 能力？） | 读 `media-col-ready` 的 borderless 字段 |
 | U-6 | 云打印路径的 `output_mime_type` 具体值（@62686948 只看到字段名） | 抓云端 job JSON |
 | U-7 | HP 是否在 JPEG 直传分支注入 ICC。`HPX` 中无 `icc_profile`/`sRGB` 打印字符串 | 抓 job 数据比对 |
+
+---
+
+## 7. 设备侧验证（2026-10-28，真机 Validate-Job）
+
+把逆向结论逐条拿到本机打印机（Ink Tank Wireless 410）上验证，结论如下：
+
+| 属性 | 设备响应 | 结论 |
+|---|---|---|
+| `print-scaling` | `0x0000 successful-ok` | ✅ 支持，已加入我们的 job 属性 |
+| `sides` | `0x0000 successful-ok` | ✅ 支持，已加入 |
+| `print-content-optimize: photo` | `0x0000 successful-ok` | ✅ 支持，已加入 |
+| `print-color-mode: color` | `0x0000 successful-ok` | ✅ 支持 |
+| `print-quality` | `0x0000 successful-ok` | ✅ 支持 |
+| **`media-col`**（media-type + media-size{x,y}） | **`0x0001 successful-ok-ignored-or-substituted-attributes`** | ❌ **本机型直接忽略**，无法用 media-type 影响墨水限制 |
+| **`hp-print-quality`**（HP 厂商属性） | **`0x0001` 被忽略** | ❌ 本机型不认 |
+| `ipp-attribute-fidelity` | **`0x0400 client-error-bad-request`** | ❌ 直接拒单，绝不能发 |
+
+**推论**：HP 的 `media-col` / `hp-print-quality` 在这台入门机上属于「发了也被忽略」的属性，
+因此**它们不是「HP 打得更亮」的原因**。亮度差异只能来自：
+
+1. 编码格式不同（HP `application/PCLm`@300 vs 我们 baseline JPEG）
+2. 打印机对 JPEG 输入的内部色彩/半色调处理
+3. 应用层的图像增强（HP 打印路径没有，我们默认开了）
+
+→ 我们采取的对策：把「自动优化图片」的补偿调强（gamma 0.88 + 6% 增益），
+并保留亮度滑块（-30%…+30%）让用户现场校准。

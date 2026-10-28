@@ -179,8 +179,8 @@ def _enhance_photo(image):
     out = image.convert("RGB")
     # 1) 自动色阶：裁掉 0.3% 极值，拉开对比
     out = ImageOps.autocontrast(out, cutoff=0.3)
-    # 2) 提亮阴影：gamma 0.92（>1 会压暗，<1 会提亮）
-    lut = [min(255, int(round(255.0 * ((i / 255.0) ** 0.92)))) for i in range(256)]
+    # 2) 提亮阴影：gamma 0.88 + 6% 增益（HP 打印照片的实测观感更亮，这里做补偿）
+    lut = [min(255, int(round(255.0 * ((i / 255.0) ** 0.88) * 1.06))) for i in range(256)]
     out = out.point(lut * 3)
     # 3) 轻微饱和度
     out = ImageEnhance.Color(out).enhance(1.05)
