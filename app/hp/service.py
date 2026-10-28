@@ -1094,6 +1094,7 @@ class PrinterService:
         media = options.get("canvas_media") or options.get("media")
         color = options.get("color") or "auto"
         quality = options.get("quality") or "normal"
+        scale = options.get("scale") or "fit"
         content_optimize = options.get("content_optimize") or "auto"
         job_name = "%s" % (self.store.get_job(job_id) or {}).get("title", "HP Offline 文档")
 
