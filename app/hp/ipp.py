@@ -658,7 +658,6 @@ class IppClient:
                 (T_NAME, "requesting-user-name", [self.user]),
                 (T_NAME, "job-name", [job_name]),
                 (T_MIME_TYPE, "document-format", [document_format]),
-                (T_BOOLEAN, "last-document", [True]),
             ]
             return self._call(OP_PRINT_JOB, attrs, job_attrs, data)
         finally:
