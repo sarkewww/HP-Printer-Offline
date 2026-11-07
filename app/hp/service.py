@@ -14,6 +14,7 @@ from __future__ import annotations
 import os
 import queue
 import smtplib
+import socket
 import ssl
 import subprocess
 import threading
@@ -1597,8 +1598,34 @@ if ($res -eq [System.Windows.Forms.DialogResult]::OK) { [Console]::Out.WriteLine
         settings = self.store.get_settings()
         default = self.store.default_printer()
         settings["default_printer"] = default["id"] if default else settings.get("default_printer", "")
+        settings["lan_url"] = self._lan_url(default)
         return settings
 
+    def _lan_url(self, default_printer: Optional[Dict[str, Any]] = None) -> str:
+        """推导局域网访问地址（不发包：UDP connect 只做路由选择）。"""
+        ip = ""
+        try:
+            probe = (default_printer or {}).get("host") or "192.168.1.1"
+            s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            try:
+                s.connect((probe, 631))
+                ip = s.getsockname()[0]
+            finally:
+                s.close()
+        except OSError:
+            ip = ""
+        if not ip or ip.startswith("127."):
+            try:
+                ip = socket.gethostbyname(socket.gethostname())
+            except OSError:
+                ip = ""
+        port = 8791
+        try:
+            with open(os.path.join(DATA_DIR, "port.txt"), encoding="ascii") as fh:
+                port = int(fh.read().strip() or 8791)
+        except (OSError, ValueError):
+            pass
+        return "http://%s:%d/" % (ip, port) if ip else ""
     def patch_settings(self, patch: Dict[str, Any]) -> Dict[str, Any]:
         allowed = {
             "theme",
@@ -1609,6 +1636,7 @@ if ($res -eq [System.Windows.Forms.DialogResult]::OK) { [Console]::Out.WriteLine
             "poll_interval",
             "default_printer",
             "offline_mode",
+            "lan_access",
         }
         cleaned = {k: v for k, v in (patch or {}).items() if k in allowed}
         if "save_dir" in cleaned:
@@ -1635,6 +1663,7 @@ if ($res -eq [System.Windows.Forms.DialogResult]::OK) { [Console]::Out.WriteLine
         settings = self.store.patch_settings(cleaned)
         default = self.store.default_printer()
         settings["default_printer"] = default["id"] if default else ""
+        settings["lan_url"] = self._lan_url(default)
         return settings
 
     def health(self) -> Dict[str, Any]:

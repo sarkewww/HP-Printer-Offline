@@ -113,6 +113,8 @@ DEFAULT_SETTINGS: Dict[str, Any] = {
     "poll_interval": 10,
     "default_printer": "",
     "offline_mode": True,
+    # 允许局域网其它设备访问面板（需要重启服务生效）
+    "lan_access": False,
     # --- 本地邮件（不经 HP 服务器）---
     "smtp_host": "",
     "smtp_port": 465,

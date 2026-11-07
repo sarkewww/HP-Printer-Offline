@@ -648,6 +648,15 @@ def main(argv: Optional[List[str]] = None) -> int:
     log.info("HP Offline %s 启动中…", __version__)
     service = build_service()
 
+    # 未显式指定 --host 时，按设置决定是否允许局域网访问
+    if host == HOST:
+        try:
+            if service.store.get_settings().get("lan_access"):
+                host = "0.0.0.0"
+                log.info("已启用局域网访问，监听 0.0.0.0")
+        except Exception:  # noqa: BLE001
+            pass
+
     try:
         server = HPHTTPServer((host, port), service)
     except OSError as exc:

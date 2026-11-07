@@ -253,6 +253,33 @@ export async function mount(root, ctx) {
         h(
           'div',
           { class: 'setting-label' },
+          h('span', { class: 'setting-name', text: '允许局域网访问' }),
+          h('span', {
+            class: 'setting-desc',
+            text:
+              '开启后同一局域网内的设备可以打开这个面板（无密码，请只在可信网络使用）。修改后需重启服务生效。' +
+              (settings.lan_url ? ' 当前地址：' + settings.lan_url : ''),
+          })
+        ),
+        h(
+          'div',
+          { class: 'setting-control' },
+          switchControl({
+            ariaLabel: '允许局域网访问',
+            checked: Boolean(settings.lan_access),
+            onchange: (value) => {
+              settings.lan_access = value;
+              patch({ lan_access: value }, '局域网访问');
+              toast(value ? '已开启，重启服务后生效' : '已关闭，重启服务后生效', { tone: 'info' });
+            },
+          })
+        )
+      ),      h(
+        'div',
+        { class: 'setting-row' },
+        h(
+          'div',
+          { class: 'setting-label' },
           h('span', { class: 'setting-name', text: '自动发现' }),
           h('span', { class: 'setting-desc', text: '启动时用 mDNS / WSD / SNMP 探测局域网打印机。' })
         ),
