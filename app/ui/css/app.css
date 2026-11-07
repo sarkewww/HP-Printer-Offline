@@ -4672,3 +4672,701 @@ img {
 .preview-editor {
   padding-bottom: calc(var(--space-5) + 8px);
 }
+
+/* ============================================================================
+   16. 手机端（≤640px）
+   所有规则都包在断点内，桌面端（>1100px）视觉不受影响。
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  :root {
+    --gutter: 12px;
+    --mobile-nav-h: 56px;
+    --mobile-nav-safe: env(safe-area-inset-bottom, 0px);
+    --mobile-actionbar-space: 140px;
+  }
+
+  html {
+    scroll-padding-bottom: calc(var(--mobile-nav-h) + var(--mobile-nav-safe) + 8px);
+  }
+
+  body {
+    touch-action: manipulation;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea,
+  [role="button"] {
+    touch-action: manipulation;
+  }
+
+  /* ---------- 1. 外壳：左侧栏 → 底部固定导航 ---------- */
+
+  .app {
+    display: block;
+    min-height: 100vh;
+  }
+
+  .rail.nav-rail {
+    position: fixed;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 70;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    gap: 0;
+    width: 100%;
+    height: calc(var(--mobile-nav-h) + var(--mobile-nav-safe));
+    padding: 0 4px var(--mobile-nav-safe);
+    background: var(--md-sys-color-surface-container-low);
+    border-top: 1px solid var(--md-sys-color-outline-variant);
+    border-right: 0;
+    box-shadow: 0 -2px 12px color-mix(in srgb, var(--md-sys-color-scrim) 10%, transparent);
+  }
+
+  .rail-brand,
+  .rail-footer {
+    display: none;
+  }
+
+  .rail-nav {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
+    gap: 0;
+  }
+
+  .nav-item {
+    flex: 1 1 0;
+    min-width: 0;
+    height: auto;
+    flex-direction: column;
+    justify-content: center;
+    gap: 2px;
+    padding: 2px 0 0;
+    border-radius: var(--shape-md);
+    font: 500 12px/16px var(--font-sans);
+  }
+
+  .nav-label {
+    max-width: 100%;
+    font-size: 12px;
+    line-height: 16px;
+  }
+
+  .nav-item[aria-current="page"] {
+    background: transparent;
+    color: var(--md-sys-color-on-surface);
+  }
+
+  .nav-item[aria-current="page"] .nav-icon {
+    width: 48px;
+    max-width: calc(100% - 2px);
+    height: 30px;
+    border-radius: var(--shape-full);
+    background: var(--md-sys-color-secondary-container);
+    color: var(--md-sys-color-on-secondary-container);
+    transform: none;
+  }
+
+  /* 内容底部为「导航栏 + 操作栏」留白，最后一行不被遮住 */
+  .view {
+    padding: 12px 12px calc(var(--mobile-nav-h) + var(--mobile-nav-safe) + 16px);
+  }
+
+  .view.has-actionbar {
+    padding-bottom: calc(var(--mobile-nav-h) + var(--mobile-nav-safe) + var(--mobile-actionbar-space));
+  }
+
+  .offline-slot {
+    padding: 12px 12px 0;
+  }
+
+  /* ---------- 2. 顶栏 ---------- */
+
+  .topbar {
+    gap: 8px;
+    padding: 0 12px;
+  }
+
+  .topbar-title {
+    font-size: 18px;
+    line-height: 24px;
+  }
+
+  .topbar-actions {
+    gap: 4px;
+  }
+
+  /* ---------- 3. 触控尺寸与表单 ---------- */
+
+  .btn {
+    min-height: 44px;
+  }
+
+  .btn-sm {
+    height: auto;
+    min-height: 44px;
+    padding: 0 14px;
+    font-size: 13px;
+  }
+
+  .icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .segmented {
+    height: auto;
+    min-height: 44px;
+  }
+
+  .segment {
+    min-height: 44px;
+    padding: 0 12px;
+    font-size: 13px;
+  }
+
+  .filter-chip {
+    height: 44px;
+    padding: 0 16px;
+  }
+
+  .batch-toggle {
+    height: auto;
+    min-height: 44px;
+  }
+
+  .page-row {
+    min-height: 44px;
+  }
+
+  .page-check {
+    width: 22px;
+    height: 22px;
+  }
+
+  .accent-swatch {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* 开关保持 52×32 观感，用伪元素把命中区扩到 44px 高 */
+  .switch::after {
+    content: "";
+    position: absolute;
+    inset: -6px -4px;
+    border-radius: var(--shape-full);
+  }
+
+  .stepper-controls {
+    height: 48px;
+  }
+
+  .stepper-controls .icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  .select-option {
+    height: 44px;
+  }
+
+  /* iOS 聚焦输入框不自动放大 */
+  input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+  select,
+  textarea,
+  .field-input,
+  .select-trigger {
+    font-size: 16px;
+  }
+
+  .field-input.is-mono {
+    font-size: 16px;
+  }
+
+  /* 滑块：加大拇指与轨道命中区 */
+  .slider {
+    height: 32px;
+  }
+
+  .slider::-webkit-slider-runnable-track {
+    height: 6px;
+  }
+
+  .slider::-webkit-slider-thumb {
+    width: 24px;
+    height: 24px;
+    margin-top: -9px;
+  }
+
+  .slider::-moz-range-track {
+    height: 6px;
+  }
+
+  .slider::-moz-range-thumb {
+    width: 24px;
+    height: 24px;
+  }
+
+  /* ---------- 4. 布局：双列 → 单列，卡片收紧 ---------- */
+
+  .home-grid,
+  .print-workspace,
+  .print-grid,
+  .scan-grid,
+  .printer-grid,
+  .settings-fields {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .home-grid {
+    grid-template-areas:
+      "hero"
+      "supplies"
+      "quick"
+      "recent";
+    gap: 12px;
+  }
+
+  .quick-card {
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+  }
+
+  .quick-tile {
+    padding: 12px;
+  }
+
+  .hero,
+  .section.is-padded,
+  .options-card,
+  .scan-options,
+  .print-options,
+  .edit-panel,
+  .batch-card,
+  .batch-summary,
+  .recent-print-card,
+  .history-toolbar {
+    padding: 16px;
+  }
+
+  .history-toolbar {
+    gap: 8px;
+    align-items: stretch;
+  }
+
+  .section-head {
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .section-actions {
+    flex-wrap: wrap;
+  }
+
+  .hero-name {
+    font-size: 21px;
+    line-height: 28px;
+  }
+
+  .hero-metrics {
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 12px;
+  }
+
+  .hero-metric + .hero-metric {
+    padding-left: 12px;
+  }
+
+  .tanks {
+    gap: 12px;
+  }
+
+  .tank-track {
+    width: 48px;
+    height: 96px;
+  }
+
+  .device-head {
+    flex-wrap: wrap;
+  }
+
+  .info-grid {
+    grid-template-columns: 96px minmax(0, 1fr);
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .shortcut-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 8px;
+  }
+
+  .shortcut-row-actions {
+    justify-content: flex-end;
+  }
+
+  /* 正文说明文字不小于 13px */
+  .field-hint,
+  .section-sub,
+  .job-sub,
+  .setting-desc,
+  .task-meta,
+  .preview-sub,
+  .dropzone-hint,
+  .history-summary,
+  .media-hint-text,
+  .scan-empty,
+  .empty-desc,
+  .banner-message,
+  .recent-meta {
+    font-size: 13px;
+    line-height: 18px;
+  }
+
+  /* ---------- 5. 底部操作栏：全宽，位于导航之上 ---------- */
+
+  .action-bar {
+    left: 0;
+    right: 0;
+    bottom: calc(var(--mobile-nav-h) + var(--mobile-nav-safe));
+    z-index: 60;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+  }
+
+  .action-bar-info {
+    flex: 1 1 140px;
+    min-width: 0;
+  }
+
+  .action-bar-actions {
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    margin-left: auto;
+  }
+
+  .action-bar-title,
+  .action-bar-sub {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /* ---------- 6. Toast：全宽居中并避开底栏 ---------- */
+
+  .toast-root {
+    left: 50%;
+    width: calc(100vw - 24px);
+    max-width: 560px;
+    transform: translateX(-50%);
+    bottom: calc(var(--mobile-nav-h) + var(--mobile-nav-safe) + 12px);
+  }
+
+  body:has(.action-bar) .toast-root {
+    bottom: calc(var(--mobile-nav-h) + var(--mobile-nav-safe) + 108px);
+  }
+
+  /* ---------- 7. 对话框：贴底抽屉 ---------- */
+
+  .dialog-layer {
+    place-items: end stretch;
+    padding: 0;
+  }
+
+  .dialog {
+    width: 100%;
+    max-width: 100%;
+    max-height: 88vh;
+    padding: 20px 16px calc(20px + var(--mobile-nav-safe));
+    border-radius: var(--shape-xl) var(--shape-xl) 0 0;
+    animation: sheet-in var(--dur-medium-2) var(--ease-emphasized);
+  }
+
+  .dialog-layer.is-closing .dialog {
+    animation: sheet-out 160ms var(--ease-standard) forwards;
+  }
+
+  .dialog-actions {
+    flex-wrap: wrap;
+  }
+
+  .dialog-actions .btn {
+    flex: 1 1 auto;
+  }
+
+  /* ---------- 8. 历史表格：卡片式行 ---------- */
+
+  .table-wrap {
+    overflow-x: visible;
+  }
+
+  .data-table {
+    display: block;
+    min-width: 0;
+  }
+
+  .data-table thead {
+    display: none;
+  }
+
+  .data-table tbody {
+    display: block;
+  }
+
+  .data-table tbody tr {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 12px;
+    border-bottom: 1px solid var(--md-sys-color-outline-variant);
+  }
+
+  .data-table tbody tr:last-child {
+    border-bottom: 0;
+  }
+
+  .data-table tbody th,
+  .data-table tbody td {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 0;
+    border-bottom: 0;
+    text-align: right;
+  }
+
+  .data-table tbody td::before {
+    flex: none;
+    color: var(--md-sys-color-on-surface-variant);
+    font: var(--type-label-m);
+    font-size: 13px;
+  }
+
+  .data-table tbody td:nth-child(2)::before {
+    content: "类型";
+  }
+
+  .data-table tbody td:nth-child(3)::before {
+    content: "状态";
+  }
+
+  .data-table tbody td:nth-child(4)::before {
+    content: "页数";
+  }
+
+  .data-table tbody td:nth-child(5)::before {
+    content: "时间";
+  }
+
+  .data-table tbody th.cell-job-cell {
+    display: block;
+    width: auto;
+    text-align: left;
+  }
+
+  .cell-job {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .cell-job-title {
+    max-width: none;
+    white-space: normal;
+    overflow-wrap: anywhere;
+  }
+
+  .data-table .is-actions {
+    width: auto;
+    justify-content: flex-end;
+  }
+
+  .data-table tbody td.cell-state {
+    flex-wrap: wrap;
+  }
+
+  .cell-state {
+    min-width: 0;
+  }
+
+  .cell-progress {
+    width: 100%;
+    max-width: none;
+    margin-top: 0;
+  }
+
+  .data-table tbody td.cell-time {
+    flex-wrap: wrap;
+  }
+
+  .row-actions .icon-btn {
+    width: 44px;
+    height: 44px;
+  }
+
+  /* ---------- 9. 任务 / 作业行 ---------- */
+
+  .task-row {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 12px;
+    padding: 12px;
+  }
+
+  .task-actions {
+    justify-content: flex-end;
+    flex-wrap: wrap;
+  }
+
+  .task-progress {
+    max-width: none;
+  }
+
+  .job-row {
+    flex-wrap: wrap;
+    padding: 11px 4px;
+  }
+
+  .job-row .job-main {
+    flex: 1 1 140px;
+  }
+
+  /* ---------- 10. 打印 / 扫描预览 ---------- */
+
+  .preview-card,
+  .scan-preview-card {
+    min-height: 0;
+  }
+
+  .preview-stage {
+    min-height: 0;
+  }
+
+  .print-single .preview-stage {
+    min-height: 0;
+    padding: 12px;
+  }
+
+  .scan-preview-card .preview-stage {
+    min-height: 220px;
+  }
+
+  .preview-image,
+  .preview-page {
+    max-height: 45vh;
+  }
+
+  .dropzone {
+    padding: 16px;
+  }
+
+  .preview-empty .dropzone {
+    min-height: 168px;
+  }
+
+  .preview-toolbar {
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 10px 12px;
+  }
+
+  .preview-tools {
+    flex-wrap: wrap;
+    gap: 2px;
+  }
+
+  .preview-foot {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 12px;
+  }
+
+  .preview-status {
+    max-width: 100%;
+    margin-left: 0;
+    text-align: left;
+    white-space: normal;
+  }
+
+  .preview-editor {
+    padding: 12px;
+  }
+
+  .preview-editor .edit-canvas-wrap {
+    max-height: none;
+  }
+
+  .preview-editor .edit-canvas {
+    max-height: 40vh;
+  }
+
+  .edit-head,
+  .edit-tools,
+  .edit-actions,
+  .batch-file-head,
+  .found-row,
+  .device-actions,
+  .dropzone-actions {
+    flex-wrap: wrap;
+  }
+
+  .batch-pages {
+    grid-template-columns: 1fr;
+  }
+
+  /* 扫描选项面板：限高时把底部导航也算进去 */
+  .scan-options {
+    max-height: calc(100vh - var(--topbar-h) - var(--mobile-nav-h) - var(--mobile-nav-safe) - 24px);
+    padding: 16px;
+  }
+
+  .scan-options > .btn-block {
+    bottom: calc(var(--space-4) * -1);
+    margin: var(--space-2) calc(var(--space-4) * -1) calc(var(--space-4) * -1);
+    padding: var(--space-3) var(--space-4) var(--space-4);
+  }
+
+  .scan-recent {
+    padding: 10px 12px;
+  }
+
+  .print-modebar {
+    padding: 12px;
+    gap: 12px;
+  }
+
+  .banner {
+    flex-wrap: wrap;
+  }
+}
+
+@keyframes sheet-in {
+  from {
+    opacity: 0.4;
+    transform: translateY(100%);
+  }
+}
+
+@keyframes sheet-out {
+  to {
+    opacity: 0;
+    transform: translateY(100%);
+  }
+}
